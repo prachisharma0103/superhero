@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What Superhero Are You?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #0a0a1a;
+      background-image:
+        radial-gradient(ellipse at 20% 20%, #1a0a3a 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, #0a1a3a 0%, transparent 50%);
+      font-family: 'Nunito', sans-serif;
+      color: #e8e0ff;
+      padding: 2rem 1rem;
+    }
+
+    .page-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      letter-spacing: 0.06em;
+      line-height: 1;
+      color: #fff;
+      text-shadow:
+        0 0 20px #a78bfa,
+        0 0 60px #7c3aed,
+        4px 4px 0 #3b0764;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: #a78bfa;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .stars {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 1rem;
+    }
+
+    .star {
+      width: 6px;
+      height: 6px;
+      background: #a78bfa;
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .star:nth-child(2) { animation-delay: 0.3s; }
+    .star:nth-child(3) { animation-delay: 0.6s; }
+    .star:nth-child(4) { animation-delay: 0.9s; }
+    .star:nth-child(5) { animation-delay: 1.2s; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    .question-block {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.3s;
+    }
+
+    .question-block:hover {
+      border-color: rgba(167,139,250,0.45);
+    }
+
+    .question-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .q-num {
+      font-family: 'Bangers', cursive;
+      font-size: 1.6rem;
+      color: #a78bfa;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      min-width: 2rem;
+    }
+
+    .q-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ede9fe;
+      line-height: 1.3;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .option-btn {
+      display: block;
+      background: rgba(109,40,217,0.12);
+      border: 1.5px solid rgba(167,139,250,0.25);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #c4b5fd;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+      line-height: 1.3;
+    }
+
+    .option-btn:hover {
+      background: rgba(139,92,246,0.28);
+      border-color: #a78bfa;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .option-btn:active {
+      transform: translateY(0) scale(0.98);
+      background: rgba(139,92,246,0.4);
+    }
+
+    .result-box {
+      margin-top: 2.5rem;
+      background: linear-gradient(135deg, rgba(109,40,217,0.2), rgba(30,10,80,0.5));
+      border: 1.5px solid rgba(167,139,250,0.4);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .result-box .result-label {
+      font-family: 'Bangers', cursive;
+      font-size: 1.2rem;
+      letter-spacing: 0.15em;
+      color: #a78bfa;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-box .result-hero {
+      font-family: 'Bangers', cursive;
+      font-size: 2.8rem;
+      color: #fff;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 30px #7c3aed;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-box .result-hint {
+      font-size: 0.95rem;
+      color: #9f8ec4;
+      font-weight: 600;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(167,139,250,0.15);
+      margin: 2.5rem 0;
+    }
+
+    @media (max-width: 480px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      header h1 {
+        font-size: 2.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header>
+      <h1>What Superhero Are You?</h1>
+      <p>10 questions to reveal your inner hero</p>
+      <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+      </div>
+    </header>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">01</span>
+        <span class="q-text">What's your fighting style?</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">Brute strength 💪</button>
+        <button class="option-btn">Gadgets &amp; technology 🔧</button>
+        <button class="option-btn">Speed &amp; agility ⚡</button>
+        <button class="option-btn">Magic &amp; powers 🔮</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">02</span>
+        <span class="q-text">Pick your ideal superpower</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">Flying</button>
+        <button class="option-btn">Invisibility</button>
+        <button class="option-btn">Super strength</button>
+        <button class="option-btn">Mind reading</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">03</span>
+        <span class="q-text">What motivates you to be a hero?</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">Revenge</button>
+        <button class="option-btn">Protecting loved ones</button>
+        <button class="option-btn">Justice &amp; duty</button>
+        <button class="option-btn">Proving myself</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">04</span>
+        <span class="q-text">Pick a color</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">🔴 Red &amp; Gold</button>
+        <button class="option-btn">🔵 Blue &amp; Red</button>
+        <button class="option-btn">⚫ Black &amp; Grey</button>
+        <button class="option-btn">🟢 Green</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">05</span>
+        <span class="q-text">Your personality is more:</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">Serious &amp; focused</button>
+        <button class="option-btn">Funny &amp; sarcastic</button>
+        <button class="option-btn">Kind &amp; caring</button>
+        <button class="option-btn">Mysterious &amp; lone wolf</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">06</span>
+        <span class="q-text">Where would you rather live?</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">A high-tech mansion</button>
+        <button class="option-btn">A secret cave/hideout</button>
+        <button class="option-btn">Asgard / another realm</button>
+        <button class="option-btn">A normal city apartment</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">07</span>
+        <span class="q-text">Your biggest weakness?</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">Overconfidence</button>
+        <button class="option-btn">Trust issues</button>
+        <button class="option-btn">Too emotional</button>
+        <button class="option-btn">Acting alone</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">08</span>
+        <span class="q-text">Pick a sidekick</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">A robot AI (like JARVIS)</button>
+        <button class="option-btn">A loyal best friend</button>
+        <button class="option-btn">No one — I work alone</button>
+        <button class="option-btn">A funny partner</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">09</span>
+        <span class="q-text">What would you do with your powers first?</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">Fight crime immediately</button>
+        <button class="option-btn">Test my limits</button>
+        <button class="option-btn">Tell my best friend</button>
+        <button class="option-btn">Keep it completely secret</button>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-label">
+        <span class="q-num">10</span>
+        <span class="q-text">Pick your vibe</span>
+      </div>
+      <div class="options-grid">
+        <button class="option-btn">Leader of the team</button>
+        <button class="option-btn">The lone wolf</button>
+        <button class="option-btn">The funny one</button>
+        <button class="option-btn">The smart strategist</button>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="result-box">
+      <div class="result-label">✦ Your result ✦</div>
+      <div class="result-hero">Your hero awaits...</div>
+      <div class="result-hint">Answer all questions above to reveal your superhero identity</div>
+    </div>
+
+  </div>
+</body>
+</html>
